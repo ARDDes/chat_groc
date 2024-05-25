@@ -65,14 +65,43 @@ if st.session_state.vectors is not None:
     st.title("ChatGroq Demo")
     llm = ChatGroq(groq_api_key=groq_api_key, model_name="mixtral-8x7b-32768")
 
-    prompt_template = """
-    Answer the questions based on the provided context only.
-    Please provide the most accurate response based on the question
-    <context>
-    {context}
-    <context>
-    Questions: {input}
-    """
+    # Choose the appropriate prompt template based on the selected model
+    if option == 'FPHam/MissLizzy_7b_HF':
+        prompt_template = """
+        You are a helpful and knowledgeable assistant. Please provide a detailed and accurate response to the following question based on the given context.
+
+        <context>
+        {context}
+        <context>
+
+        Question: {input}
+        Answer: 
+        """
+    elif option == 'recogna-nlp/Phi-Bode':
+        prompt_template = """
+        You are an expert in technical and analytical problem-solving. Use the context provided to answer the question precisely and comprehensively.
+
+        <context>
+        {context}
+        <context>
+
+        Question: {input}
+        Detailed Answer: 
+        """
+    else:  # meta-llama/Meta-Llama-3-8B
+        prompt_template = """
+        You are a creative and insightful assistant. Use the given context to provide an in-depth and thoughtful response to the following question.
+
+        <context>
+        {context}
+        <context>
+
+        Question: {input}
+        Insightful Answer: 
+        """
+
+
+
     prompt = ChatPromptTemplate.from_template(prompt_template)
     document_chain = create_stuff_documents_chain(llm, prompt)
     retriever = st.session_state.vectors.as_retriever()
